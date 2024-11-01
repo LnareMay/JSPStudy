@@ -8,9 +8,12 @@ public class ViewMainPage implements Service {
 
 	@Override
 	public ServiceForward execute(HttpServletRequest req, HttpServletResponse res) {
+		ServiceForward forward = new ServiceForward();
 		
 		
-		return null;
+		forward.setRedirect(true);
+		forward.setPath("/page/mainPage.jsp");
+		return forward;
 	}
 
 }
