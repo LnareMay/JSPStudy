@@ -12,7 +12,7 @@ public class ViewMainPage implements Service {
 		
 		
 		forward.setRedirect(true);
-		forward.setPath("/page/mainPage.jsp");
+		forward.setPath("./page/mainPage.jsp");
 		return forward;
 	}
 
