@@ -1,51 +1,69 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="ko">
-<link rel="stylesheet" href="../css/mainPage.css" />
 <head>
     <meta charset="UTF-8">
-    <title>항공권 예약</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GooD Flight</title>
+    <link rel="stylesheet" href="../css/mainPage.css">
     <script type="text/javascript">
- 		var imgArray=new Array();
-  		imgArray[0]="../assets/1.jpg";
-  		imgArray[1]="../assets/2.jpg";
-  		imgArray[2]="../assets/3.jpg";
-  		imgArray[3]="../assets/4.jpg";
-  		imgArray[4]="../assets/5.jpg";
-  		imgArray[5]="../assets/6.jpg";
-  		imgArray[6]="../assets/7.jpg";
+	  	var imgArray=new Array();
+	  	imgArray[0]="../assets/1.jpg";
+	  	imgArray[1]="../assets/2.jpg";
+	  	imgArray[2]="../assets/3.jpg";
+	  	imgArray[3]="../assets/4.jpg";
+	
+	  	function showImage(){
+		   var imgNum=Math.round(Math.random()*3);
+		   var objImg=document.getElementById("bodyImg");
+		   objImg.background=imgArray[imgNum];
+		   setTimeout(showImage,5000);
+	 	}
 
-  		function showImage(){
-  		   var imgNum=Math.round(Math.random()*3);
-  		   var objImg=document.getElementById("introimg");
-  		   objImg.src=imgArray[imgNum];
-  		   setTimeout(showImage,5000);
-  		  }
-
-  		 </script>
+ </script>
 </head>
-<body>
-    <div class="container">
-        <h1>항공권 예약 시스템</h1>
-        <form action="getInit.form" method="post" class="reservation-form">
-            <div class="form-group">
-                <label for="from">출발지:</label>
-                <input type="text" id="from" name="from" required placeholder="출발지를 입력하세요">
+<body onload="showImage()" id="bodyImg">
+    <header>
+        <div class="logo">
+            <img src="../assets/logo.png" alt="Skyscanner Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">마이 페이지</a></li>
+                <li><a href="#">예약 내역</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="search-section">
+            <h1>여행을 떠나자!</h1>
+            <div class="search-bar">
+                <form action="#">
+                    <div class="input-group">
+                        <label for="from">출발지</label>
+                        <input type="text" id="from" name="from" placeholder="출발지를 입력하세요">
+                    </div>
+                    <div class="input-group">
+                        <label for="to">목적지</label>
+                        <input type="text" id="to" name="to" placeholder="목적지를 입력하세요">
+                    </div>
+                    <div class="input-group">
+                        <label for="dates">날짜</label>
+                        <input type="text" id="dates" name="dates" placeholder="여행 날짜를 선택하세요">
+                    </div>
+                    <button type="submit" class="search-button">검색</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="to">목적지:</label>
-                <input type="text" id="to" name="to" required placeholder="목적지를 입력하세요">
-            </div>
-            <div class="form-group">
-                <label for="departure">출발일:</label>
-                <input type="date" id="departure" name="departure" required>
-            </div>
-            <div class="form-group">
-                <label for="return">귀국일:</label>
-                <input type="date" id="return" name="return">
-            </div>
-            <button type="submit" class="submit-button">검색</button>
-        </form>
-    </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <ul>
+                <li><a href="#">개인정보처리방침</a></li>
+                <li><a href="#">이용약관</a></li>
+                <li><a href="#">고객지원</a></li>
+            </ul>
+        </div>
+    </footer>
 </body>
 </html>
