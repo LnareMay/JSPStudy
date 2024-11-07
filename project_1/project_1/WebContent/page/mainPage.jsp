@@ -1,4 +1,8 @@
+<%@page import="DBModule.member"%>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+	@import url('https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css');
+</style>
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
@@ -20,6 +24,9 @@
 	 	}
 
  </script>
+ <%
+ 	member member = (member)session.getAttribute("Member");
+ %>
 </head>
 <body onload="showImage()" id="bodyImg">
     <header>
@@ -30,6 +37,8 @@
             <ul>
                 <li><a href="#">마이 페이지</a></li>
                 <li><a href="#">예약 내역</a></li>
+                <li><%= member.getName() %> 님</li>
+                <li><a href="#">로그아웃</a></li>
             </ul>
         </nav>
     </header>
@@ -38,7 +47,7 @@
         <section class="search-section">
             <h1>여행을 떠나자!</h1>
             <div class="search-bar">
-                <form action="#">
+                <form action="searchFlight.do" method="post">
                     <div class="input-group">
                         <label for="from">출발지</label>
                         <input type="text" id="from" name="from" placeholder="출발지를 입력하세요">
@@ -48,8 +57,8 @@
                         <input type="text" id="to" name="to" placeholder="목적지를 입력하세요">
                     </div>
                     <div class="input-group">
-                        <label for="dates">날짜</label>
-                        <input type="text" id="dates" name="dates" placeholder="여행 날짜를 선택하세요">
+                        <label for="date">날짜</label>
+                        <input style="font-family: NanumSquare, sans-serif" type="date" id="date" name="date">
                     </div>
                     <button type="submit" class="search-button">검색</button>
                 </form>

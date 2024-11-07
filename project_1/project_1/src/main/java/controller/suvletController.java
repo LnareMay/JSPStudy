@@ -35,13 +35,17 @@ public class suvletController extends HttpServlet{
 		String contextPath = req.getContextPath();
 		String command = requestURI.substring(contextPath.length() + 1, requestURI.length() - 3);
 		RequestDispatcher dispatcher = null;
-		
+
 		if(command.equalsIgnoreCase("signup")) {
 			service = new SignUpService();
 			forward = service.execute(req, resp);
 		}
 		if(command.equalsIgnoreCase("login")) {
 			service = new LogInService();
+			forward = service.execute(req, resp);
+		}
+		if(command.equalsIgnoreCase("page/searchFlight")) {
+			service = new SearchFlightService();
 			forward = service.execute(req, resp);
 		}
 		

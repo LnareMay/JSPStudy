@@ -4,7 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+import DBModule.flight;
 import DBModule.member;
 
 public class DBM {
@@ -101,6 +105,17 @@ public class DBM {
 			DBMUtil.rollback(conn);
 			return false;
 		}
+	}
+
+	public static List<flight> getFlightList(Connection conn, String from, String to, String date) {
+		List<flight> flightList = new ArrayList<flight>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		String sql = "select * from flight where fromairport = ? and toairport = ? and starttime like ?%";
+		
+		
+		return flightList;
 	}
 
 }

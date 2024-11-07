@@ -34,9 +34,7 @@ public class LogInService implements Service {
 				out.println("</script>");
 			} else if(member.getPassword().equals(pw)){
 				HttpSession session = req.getSession();
-				session.setAttribute("ID", id);
-				session.setAttribute("password", pw);
-				
+				session.setAttribute("Member", member);
 				forward = new ServiceForward();
 				forward.setRedirect(true);
 				forward.setPath("viewMainPage.form");
