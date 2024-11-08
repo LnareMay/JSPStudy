@@ -1,5 +1,6 @@
 package services;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +28,14 @@ public class SearchFlightService implements Service {
 			conn = DBMUtil.getConnection();
 			flightList = DBM.getFlightList(conn, from, to, date);
 			
+			req.setAttribute("flightList", flightList);
+			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 		
+		forward = new ServiceForward();
+		forward.setPath("/page/searchFlightResult.jsp?"+flightList.toString());
 		
 		return forward;
 	}

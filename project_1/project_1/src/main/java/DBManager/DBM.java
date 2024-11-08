@@ -112,9 +112,41 @@ public class DBM {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		String sql = "select * from flight where fromairport = ? and toairport = ? and starttime like ?%";
+		date = date + "%";
 		
+		String sql = "select * from flight where fromairport = ? and toairport = ? and starttime like ?";
 		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, from);
+			pstmt.setString(2, to);
+			pstmt.setString(3, date);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				flight flight = new flight();
+				flight.setFlightcode(rs.getString("flightcode"));
+				flight.setFlightname(rs.getString("flightname"));
+				flight.setFromairport(rs.getString("fromairport"));
+				flight.setToairport(rs.getString("toairport"));
+				flight.setFirstclassseats(rs.getInt("firstclassseats"));
+				flight.setBusinessseats(rs.getInt("businessseats"));
+				flight.setEconomyseats(rs.getInt("economyseats"));
+				flight.setStarttime(rs.getString("starttime"));
+				flight.setEndtime(rs.getString("endtime"));
+				flight.setReservationstarttime(rs.getString("reservationstarttime"));
+				flight.setReservationendtime(rs.getString("reservationendtime"));
+				flight.setComment(rs.getString("comment"));
+				
+				flightList.add(flight);
+			}
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		if(flightList.isEmpty()) return null;
 		return flightList;
 	}
 
