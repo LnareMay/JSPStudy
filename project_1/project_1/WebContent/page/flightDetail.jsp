@@ -1,6 +1,4 @@
 <%@page import="DBModule.flight"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.List"%>
 <%@page import="DBModule.member"%>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -30,7 +28,8 @@
  </script>
  <%
  	member member = (member)session.getAttribute("Member");
- 	List<flight> flightList = (ArrayList)request.getAttribute("flightList");
+ 	Object tmpflight = (Object)request.getParameter("flight");
+	flight flight = (flight)tmpflight;
  %>
 </head>
 <body onload="showImage()" id="bodyImg">
@@ -51,16 +50,33 @@
     <main>
         <section class="search-section">
             <div class="search-bar">
-                <div class="search-section-list">
-                	<c:if test="<%= flightList.isEmpty() %>">
-        				<h1>검색 조건에 맞는 항공편이 없습니다.</h1>
-       				</c:if>
-       				<ol>
-       					<c:forEach var="flight" items="<%= flightList %>">
-       						<li><span onclick="location.href='./flightDetail.jsp?flight=${ flight }'">${ flight.getFlightname() }</span><p>${ flight.getFlightcode() }  /  ${ flight.getComment() }</p></li>
-       					</c:forEach>
-       				</ol>
-                </div>
+                <form action="#" method="post">
+                    <div class="input-group">
+                        <label for="from">항공 코드</label>
+                        <input type="text" id="from" name="from" value="<%= flight.getFlightcode() %>" readonly="readonly">
+                    </div>
+                    <div class="input-group">
+                        <label for="from">항공기 명</label>
+                        <input type="text" id="from" name="from" placeholder="출발지를 입력하세요" readonly="readonly">
+                    </div>
+                    <div class="input-group">
+                        <label for="from">출발지</label>
+                        <input type="text" id="from" name="from" placeholder="출발지를 입력하세요" readonly="readonly">
+                    </div>
+                    <div class="input-group">
+                        <label for="to">목적지</label>
+                        <input type="text" id="to" name="to" placeholder="목적지를 입력하세요" readonly="readonly">
+                    </div>
+                    <div class="input-group">
+                        <label for="date">출발 일자</label>
+                        <input style="font-family: NanumSquare, sans-serif" type="date" id="date" name="date" readonly="readonly">
+                    </div>
+                    <div class="input-group">
+                        <label for="to">상세 설명</label>
+                        <input type="text" id="to" name="to" placeholder="목적지를 입력하세요" readonly="readonly">
+                    </div>
+                    <button type="submit" class="search-button">검색</button>
+                </form>
             </div>
         </section>
     </main>

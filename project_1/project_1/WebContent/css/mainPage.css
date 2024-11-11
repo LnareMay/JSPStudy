@@ -63,6 +63,38 @@ main {
     width: 100%;
     max-width: 600px;
 }
+.search-section-list{
+	background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    width: 100%;
+    max-width: 600px;
+}
+
+.search-section-list ol {
+  list-style: none;
+  color: #ccc;
+}
+
+.search-section-list ol li {
+  font: bold 24pt helvetica, arial, sans-serif;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.search-section-list ol li p {
+  font: 12pt "NanumSquare", sans-serif;
+  color: #555;
+  padding-left: 60px;
+}
+
+.search-section-list ol li span {
+  position: absolute;
+  line-height: 25px;
+  cursor: pointer;
+}
 
 .input-group {
     margin-bottom: 15px;
@@ -75,6 +107,14 @@ main {
 }
 
 .input-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.input-group span {
     width: 100%;
     padding: 10px;
     font-size: 16px;
