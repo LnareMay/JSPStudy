@@ -36,8 +36,14 @@ public class formController extends HttpServlet{
 		String command = requestURI.substring(contextPath.length() + 1, requestURI.length() - 5);
 		RequestDispatcher dispatcher = null;
 		
+		System.out.println(command);
+		
 		if(command.equalsIgnoreCase("viewMainPage")) {
 			service = new ViewMainPage();
+			forward = service.execute(req, resp);
+		}
+		if(command.equalsIgnoreCase("page/flightDetail")) {
+			service = new ViewFligthDetail();
 			forward = service.execute(req, resp);
 		}
 		

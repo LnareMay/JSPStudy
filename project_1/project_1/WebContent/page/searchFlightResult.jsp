@@ -31,6 +31,7 @@
  <%
  	member member = (member)session.getAttribute("Member");
  	List<flight> flightList = (ArrayList)request.getAttribute("flightList");
+ 	flight fligt = new flight();
  %>
 </head>
 <body onload="showImage()" id="bodyImg">
@@ -40,10 +41,10 @@
         </div>
         <nav>
             <ul>
-                <li><a href="#">마이 페이지</a></li>
+                <li><a href="myPage.jsp">마이 페이지</a></li>
                 <li><a href="#">예약 내역</a></li>
                 <li><%= member.getName() %> 님</li>
-                <li><a href="#">로그아웃</a></li>
+                <li><a href="../login.jsp">로그아웃</a></li>
             </ul>
         </nav>
     </header>
@@ -57,7 +58,7 @@
        				</c:if>
        				<ol>
        					<c:forEach var="flight" items="<%= flightList %>">
-       						<li><span onclick="location.href='./flightDetail.jsp?flight=${ flight }'">${ flight.getFlightname() }</span><p>${ flight.getFlightcode() }  /  ${ flight.getComment() }</p></li>
+       						<li><span onclick="location.href='flightDetail.form?flightcode=${ flight.getFlightcode() }'">${ flight.getFlightname() }</span><p>${ flight.getFlightcode() }  /  ${ flight.getComment() }</p></li>
        					</c:forEach>
        				</ol>
                 </div>

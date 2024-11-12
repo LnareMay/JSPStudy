@@ -10,6 +10,8 @@ import java.util.List;
 
 import DBModule.flight;
 import DBModule.member;
+import DBModule.member_his;
+import DBModule.reservation;
 
 public class DBM {
 
@@ -144,10 +146,174 @@ public class DBM {
 			
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
+		} finally {
+			DBMUtil.dipose(null, pstmt, null, rs);
 		}
 		
 		if(flightList.isEmpty()) return null;
 		return flightList;
+	}
+
+	public static flight getFlightDetail(Connection conn, String flightCode) {
+		flight flight = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql = "select * from flight where flightcode=?";
+		
+		try {
+			flight = new flight();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, flightCode);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				flight.setFlightcode(rs.getString("flightcode"));
+				flight.setFlightname(rs.getString("flightname"));
+				flight.setFromairport(rs.getString("fromairport"));
+				flight.setToairport(rs.getString("toairport"));;
+				flight.setFirstclassseats(rs.getInt("firstclassseats"));
+				flight.setBusinessseats(rs.getInt("businessseats"));
+				flight.setEconomyseats(rs.getInt("economyseats"));
+				flight.setStarttime(rs.getString("starttime"));
+				flight.setEndtime(rs.getString("endtime"));
+				flight.setReservationstarttime(rs.getString("reservationstarttime"));
+				flight.setReservationendtime(rs.getString("reservationendtime"));
+				flight.setCreatedate(rs.getString("createdate"));
+				flight.setLastupdatedate(rs.getString("lastupdatedate"));
+				flight.setComment(rs.getString("comment"));
+			} else {
+				DBMUtil.dipose(null, pstmt, null, rs);
+				return null;
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			DBMUtil.dipose(null, pstmt, null, rs);
+		}
+		return flight;
+	}
+
+	public static boolean reservationFlight(Connection conn, reservation reservation) {
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt_his = null;
+		ResultSet rs = null;
+		int row = 0;
+		
+		boolean isResult = false;
+		boolean hisResult = false;
+		
+		String sql = "insert into reservation (reservationcode, ID, flightcode, seatsclass, seatsnum, createdate) "
+				+ "values(?,?,?,?,?,?)";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, reservation.getReservationcode());
+			pstmt.setString(2, reservation.getID());
+			pstmt.setString(3, reservation.getFlightcode());
+			pstmt.setString(4, reservation.getSeatsclass());
+			pstmt.setInt(5, reservation.getSeatsnum());
+			pstmt.setString(6, reservation.getCreatedate());
+			
+			row = pstmt.executeUpdate();
+			
+			if(row > 0) isResult = true;
+			
+			sql = "insert into reservation_his (his_SEQ, reservationcode, ID, flightcode, seatsclass, seatsNum, his_date) "
+					+ "values(1, ?, ?, ?, ?, ?, ?)";
+			
+			pstmt_his = conn.prepareStatement(sql);
+			pstmt_his.setString(1, reservation.getReservationcode());
+			pstmt_his.setString(2, reservation.getID());
+			pstmt_his.setString(3, reservation.getFlightcode());
+			pstmt_his.setString(4, reservation.getSeatsclass());
+			pstmt_his.setInt(5, reservation.getSeatsnum());
+			pstmt_his.setString(6, reservation.getCreatedate());
+			
+			row = 0;
+			row = pstmt_his.executeUpdate();
+			
+			if(row > 0) hisResult = true;
+			
+			if(!isResult || !hisResult){
+				DBMUtil.rollback(conn);
+				return false;
+			} else {
+				DBMUtil.commit(conn);
+				return true;
+			}
+			
+		} catch (Exception e) {
+			DBMUtil.rollback(conn);
+			System.out.println(e.getMessage());
+			return false;
+		} finally {
+			DBMUtil.dipose(null, pstmt, null, rs);
+		}
+	}
+
+	public static boolean updateMember(Connection conn, member member) {
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt_seq = null;
+		PreparedStatement pstmt_his = null;
+		ResultSet rs = null;
+		int seq = 0;
+		int row = 0;
+		
+		boolean resultInsert = false;
+		boolean resultHis = false;
+		
+		String sql = "update member "
+				+ "set password=?, name=?, email=?, tel=?, lastupdatedate=? "
+				+ "where id=?";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, member.getPassword());
+			pstmt.setString(2, member.getName());
+			pstmt.setString(3, member.getEmail());
+			pstmt.setString(4, member.getTel());
+			pstmt.setString(5, member.getLastupdatedate());
+			pstmt.setString(6, member.getID());
+			
+			row = pstmt.executeUpdate();
+			
+			if(row > 0) resultInsert = true;
+			row = 0;
+			
+			sql = "select * from member_his where ID = ? order by 1 desc limit 1";
+			pstmt_seq = conn.prepareStatement(sql);
+			pstmt_seq.setString(1, member.getID());
+			rs = pstmt_seq.executeQuery();
+			if(rs.next()) seq = rs.getInt(1);
+			
+			sql = "insert into member_his(his_SEQ, ID, password, name, email, tel, his_date) values(?,?,?,?,?,?,?)";
+			pstmt_his = conn.prepareStatement(sql);
+			pstmt_his.setInt(1, seq + 1);
+			pstmt_his.setString(2, member.getID());
+			pstmt_his.setString(3, member.getPassword());
+			pstmt_his.setString(4, member.getName());
+			pstmt_his.setString(5, member.getEmail());
+			pstmt_his.setString(6, member.getTel());
+			pstmt_his.setString(7, member.getLastupdatedate());
+			
+			row = pstmt_his.executeUpdate();
+			
+			if(row > 0) resultHis = true;
+			
+			if(!resultHis || !resultInsert) {
+				DBMUtil.rollback(conn);
+				return false;
+			} else {
+				DBMUtil.commit(conn);
+				return true;
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			DBMUtil.rollback(conn);
+			return false;
+		} finally {
+			DBMUtil.dipose(conn, pstmt, pstmt_his, rs);
+		}
 	}
 
 }

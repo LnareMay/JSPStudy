@@ -28,8 +28,7 @@
  </script>
  <%
  	member member = (member)session.getAttribute("Member");
- 	Object tmpflight = (Object)request.getParameter("flight");
-	flight flight = (flight)tmpflight;
+	flight flight = (flight)request.getAttribute("flight");
  %>
 </head>
 <body onload="showImage()" id="bodyImg">
@@ -39,10 +38,10 @@
         </div>
         <nav>
             <ul>
-                <li><a href="#">마이 페이지</a></li>
+                <li><a href="myPage.jsp">마이 페이지</a></li>
                 <li><a href="#">예약 내역</a></li>
                 <li><%= member.getName() %> 님</li>
-                <li><a href="#">로그아웃</a></li>
+                <li><a href="../login.jsp">로그아웃</a></li>
             </ul>
         </nav>
     </header>
@@ -50,32 +49,49 @@
     <main>
         <section class="search-section">
             <div class="search-bar">
-                <form action="#" method="post">
+                <form action="reservation.do" method="post">
+                	<input type="hidden" id="memberID" name="memberID" value="<%= member.getID() %>">
                     <div class="input-group">
-                        <label for="from">항공 코드</label>
-                        <input type="text" id="from" name="from" value="<%= flight.getFlightcode() %>" readonly="readonly">
+                        <label for="flightCode">항공 코드</label>
+                        <input type="text" id="flightCode" name="flightCode" value="<%= flight.getFlightcode() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
-                        <label for="from">항공기 명</label>
-                        <input type="text" id="from" name="from" placeholder="출발지를 입력하세요" readonly="readonly">
+                        <label for="flightName">항공기 명</label>
+                        <input type="text" id="flightName" name="flightName" value="<%= flight.getFlightname() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
                         <label for="from">출발지</label>
-                        <input type="text" id="from" name="from" placeholder="출발지를 입력하세요" readonly="readonly">
+                        <input type="text" id="from" name="from" value="<%= flight.getFromairport() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
                         <label for="to">목적지</label>
-                        <input type="text" id="to" name="to" placeholder="목적지를 입력하세요" readonly="readonly">
+                        <input type="text" id="to" name="to" value="<%= flight.getToairport() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
-                        <label for="date">출발 일자</label>
-                        <input style="font-family: NanumSquare, sans-serif" type="date" id="date" name="date" readonly="readonly">
+                        <label for="startTime">출발 시간</label>
+                        <input type="text" id="startTime" name="startTime" value="<%= flight.getStarttime() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
-                        <label for="to">상세 설명</label>
-                        <input type="text" id="to" name="to" placeholder="목적지를 입력하세요" readonly="readonly">
+                        <label for="endTime">도착 시간</label>
+                        <input type="text" id="endTime" name="endTime" value="<%= flight.getEndtime() %>" readonly="readonly">
                     </div>
-                    <button type="submit" class="search-button">검색</button>
+                    <div class="input-group">
+                        <label for="comment">상세 설명</label>
+                        <input type="text" id="comment" name="comment" value="<%= flight.getComment() %>" readonly="readonly">
+                    </div>
+                    <div class="input-group">
+                        <label for="seatsClass">좌석</label>
+                    </div>
+                    <div class="input-group" style="display: flex;">
+                        <label>First</label><input type="radio" id="firstclassseats" name="firstclassseats"> 
+                        <label>Business</label><input type="radio" id="businessseats" name="businessseats">
+                        <label>Economy</label><input type="radio" id="economyseats" name="economyseats">
+                    </div>
+                    <div class="input-group">
+                        <label for="seats">인원 수</label>
+                        <input type="number" id="seats" name="seats">
+                    </div>
+                    <button type="submit" class="search-button">예약</button>
                 </form>
             </div>
         </section>
