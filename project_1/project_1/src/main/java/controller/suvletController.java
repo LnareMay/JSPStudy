@@ -56,6 +56,10 @@ public class suvletController extends HttpServlet{
 			service = new UpdateMember();
 			forward = service.execute(req, resp);
 		}
+		if(command.equalsIgnoreCase("page/updateReservation")) {
+			service = new UpdateReservation();
+			forward = service.execute(req, resp);
+		}
 		
 		if(forward != null) {
 			if(forward.isRedirect()) {

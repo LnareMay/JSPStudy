@@ -49,8 +49,12 @@
     <main>
         <section class="search-section">
             <div class="search-bar">
-                <form action="reservation.do" method="post">
+                <form action="updateReservation.do" method="post">
                 	<input type="hidden" id="memberID" name="memberID" value="<%= member.getID() %>">
+                    <div class="input-group">
+                        <label for="reservationCode">예약 코드</label>
+                        <input type="text" id="reservationCode" name="reservationCode" value="<%= request.getParameter("reservationCode") %>" readonly="readonly">
+                    </div>
                     <div class="input-group">
                         <label for="flightCode">항공 코드</label>
                         <input type="text" id="flightCode" name="flightCode" value="<%= flight.getFlightcode() %>" readonly="readonly">
@@ -89,9 +93,9 @@
                     </div>
                     <div class="input-group">
                         <label for="seats">인원 수</label>
-                        <input type="number" id="seats" name="seats">
-                    </div>
-                    <button type="submit" class="search-button">예약</button>
+                        <input type="number" id="seats" name="seats" value="<%= request.getParameter("seatsNum") %>">
+                    </div>	
+                    <button type="submit" class="search-button">수정</button>
                 </form>
             </div>
         </section>

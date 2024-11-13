@@ -1,4 +1,4 @@
-<%@page import="DBModule.flight"%>
+<%@page import="DBModule.reservation_his"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page import="DBModule.member"%>
@@ -30,8 +30,7 @@
  </script>
  <%
  	member member = (member)session.getAttribute("Member");
- 	List<flight> flightList = (ArrayList)request.getAttribute("flightList");
- 	flight fligt = new flight();
+ 	List<reservation_his> resList = (ArrayList)request.getAttribute("resList");
  %>
 </head>
 <body onload="showImage()" id="bodyImg">
@@ -53,12 +52,17 @@
         <section class="search-section">
             <div class="search-bar">
                 <div class="search-section-list">
-                	<c:if test="<%= flightList.isEmpty() %>">
-        				<h1>검색 조건에 맞는 항공편이 없습니다.</h1>
+                	<c:if test="<%= resList == null %>">
+        				<h1>여행 이력이 없습니다.</h1>
        				</c:if>
        				<ol>
-       					<c:forEach var="flight" items="<%= flightList %>">
-       						<li><span onclick="location.href='flightDetail.form?flightcode=${ flight.getFlightcode() }'">${ flight.getFlightname() }</span><p>${ flight.getFlightcode() }  /  ${ flight.getComment() }</p></li>
+       					<c:forEach var="res" items="<%= resList %>">
+       						<div class="input-group">
+                        		<label for="reservation">${ res.getFlightcode() }</label>
+                        		<input type="text" id="reservation" name="reservation" readonly="readonly" style="color: black; cursor: pointer;" 
+                        		onclick="location.href='reservationDetail.form?flightcode=${ res.getFlightcode() }&seatsNum=${ res.getSeatsnum() }&seatsClass=${ res.getSeatsclass() }&reservationCode=${ res.getReservationcode() }'"
+                        		value="${ res.getFlightcode() }  /  ${ res.getHis_date() }">
+                    		</div>
        					</c:forEach>
        				</ol>
                 </div>

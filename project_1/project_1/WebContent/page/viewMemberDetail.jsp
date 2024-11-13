@@ -1,7 +1,5 @@
-<%@page import="DBModule.flight"%>
 <%@page import="DBModule.member"%>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <style>
 	@import url('https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css');
 </style>
@@ -11,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GooD Flight</title>
     <link rel="stylesheet" href="../css/mainPage.css">
+    <link rel="stylesheet" href="../css/css.css" />
     <script type="text/javascript">
 	  	var imgArray=new Array();
 	  	imgArray[0]="../assets/1.jpg";
@@ -28,7 +27,13 @@
  </script>
  <%
  	member member = (member)session.getAttribute("Member");
-	flight flight = (flight)request.getAttribute("flight");
+ 	member memInfo = (member)request.getAttribute("member");
+ 	String tel = memInfo.getTel();
+ 	if(tel.length() == 10){
+ 		tel = tel.substring(0, 3) + "-" + tel.substring(3,6) + "-" + tel.substring(7);
+ 	} else if(tel.length() == 11){
+ 		tel = tel.substring(0, 3) + "-" + tel.substring(3,7) + "-" + tel.substring(7);
+ 	}
  %>
 </head>
 <body onload="showImage()" id="bodyImg">
@@ -47,45 +52,45 @@
     </header>
 
     <main>
-        <section class="search-section">
-            <div class="search-bar">
-                <form action="reservation.do" method="post">
-                	<input type="hidden" id="memberID" name="memberID" value="<%= member.getID() %>">
+        <form action="reservation.do" method="post">
                     <div class="input-group">
-                        <label for="flightCode">항공 코드</label>
-                        <input type="text" id="flightCode" name="flightCode" value="<%= flight.getFlightcode() %>" readonly="readonly">
+                        <label for="flightCode">아이디</label>
+                        <input type="text" id="flightCode" name="flightCode" value="<%= memInfo.getID() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
-                        <label for="flightName">항공기 명</label>
-                        <input type="text" id="flightName" name="flightName" value="<%= flight.getFlightname() %>" readonly="readonly">
+                        <label for="flightCode">이름</label>
+                        <input type="text" id="flightCode" name="flightCode" value="<%= memInfo.getName() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
-                        <label for="from">출발지</label>
-                        <input type="text" id="from" name="from" value="<%= flight.getFromairport() %>" readonly="readonly">
+                        <label for="flightName">이메일</label>
+                        <input type="text" id="flightName" name="flightName" value="<%= memInfo.getEmail() %>" readonly="readonly">
+                    </div>
+                    <div class="input-group">
+                        <label for="from">전화번호</label>
+                        <input type="text" id="from" name="from" value="<%= memInfo.getTel() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
                         <label for="to">목적지</label>
-                        <input type="text" id="to" name="to" value="<%= flight.getToairport() %>" readonly="readonly">
+                        <input type="text" id="to" name="to" value="<%= memInfo.getToairport() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
                         <label for="startTime">출발 시간</label>
-                        <input type="text" id="startTime" name="startTime" value="<%= flight.getStarttime() %>" readonly="readonly">
+                        <input type="text" id="startTime" name="startTime" value="<%= memInfo.getStarttime() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
                         <label for="endTime">도착 시간</label>
-                        <input type="text" id="endTime" name="endTime" value="<%= flight.getEndtime() %>" readonly="readonly">
+                        <input type="text" id="endTime" name="endTime" value="<%= memInfo.getEndtime() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
                         <label for="comment">상세 설명</label>
-                        <input type="text" id="comment" name="comment" value="<%= flight.getComment() %>" readonly="readonly">
+                        <input type="text" id="comment" name="comment" value="<%= memInfo.getComment() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
                         <label for="seatsClass">좌석</label>
                     </div>
                     <div class="input-group" style="display: flex;">
-                        <label>First</label><input type="radio" id="firstclassseats" name="firstclassseats"> 
-                        <label>Business</label><input type="radio" id="businessseats" name="businessseats">
-                        <label>Economy</label><input type="radio" id="economyseats" name="economyseats">
+                        <label>기장</label><input type="radio" id="isdriver" name="isdriver"> 
+                        <label>관리자</label><input type="radio" id="ismanager" name="ismanager">
                     </div>
                     <div class="input-group">
                         <label for="seats">인원 수</label>
@@ -93,8 +98,6 @@
                     </div>
                     <button type="submit" class="search-button">예약</button>
                 </form>
-            </div>
-        </section>
     </main>
     <footer>
         <div class="footer-content">

@@ -12,6 +12,7 @@ import DBModule.flight;
 import DBModule.member;
 import DBModule.member_his;
 import DBModule.reservation;
+import DBModule.reservation_his;
 
 public class DBM {
 
@@ -314,6 +315,199 @@ public class DBM {
 		} finally {
 			DBMUtil.dipose(conn, pstmt, pstmt_his, rs);
 		}
+	}
+
+	public static List<reservation_his> getReservationList(Connection conn, String id) {
+		List<reservation_his> list = new ArrayList<reservation_his>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		String sql = "select * from reservation_his where ID =? order by 1 desc";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				reservation_his rsh = new reservation_his();
+				rsh.setHis_SEQ(rs.getInt(1));
+				rsh.setReservationcode(rs.getString("reservationcode"));
+				rsh.setID(rs.getString("ID"));
+				rsh.setFlightcode(rs.getString("flightcode"));
+				rsh.setSeatsclass(rs.getString("seatsclass"));
+				rsh.setSeatsnum(rs.getInt("seatsNum"));
+				rsh.setHis_date(rs.getString("his_date"));
+				
+				list.add(rsh);
+			}
+			
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			DBMUtil.dipose(conn, pstmt, null, rs);
+		}
+		
+		return list;
+	}
+
+	public static flight getReservationFlightDetail(Connection conn, String iD, String flightCode) {
+		flight flight = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		String sql = "select f.* "
+				+ "from reservation_his rh, "
+				+ "flight f "
+				+ "where rh.ID =? "
+				+ "and rh.flightcode =? "
+				+ "and rh.flightcode = f.flightcode";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, iD);
+			pstmt.setString(2, flightCode);
+			
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				flight = new flight();
+				flight.setFlightcode(rs.getString("flightcode"));
+				flight.setFlightname(rs.getString("flightname"));
+				flight.setFromairport(rs.getString("fromairport"));
+				flight.setToairport(rs.getString("toairport"));;
+				flight.setFirstclassseats(rs.getInt("firstclassseats"));
+				flight.setBusinessseats(rs.getInt("businessseats"));
+				flight.setEconomyseats(rs.getInt("economyseats"));
+				flight.setStarttime(rs.getString("starttime"));
+				flight.setEndtime(rs.getString("endtime"));
+				flight.setReservationstarttime(rs.getString("reservationstarttime"));
+				flight.setReservationendtime(rs.getString("reservationendtime"));
+				flight.setCreatedate(rs.getString("createdate"));
+				flight.setLastupdatedate(rs.getString("lastupdatedate"));
+				flight.setComment(rs.getString("comment"));
+			}
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			DBMUtil.dipose(null, pstmt, null, rs);
+		}
+		
+		
+		return flight;
+	}
+
+	public static boolean updateReservation(Connection conn, reservation reservation) {
+		PreparedStatement pstmt = null;
+		PreparedStatement pstmt_his = null;
+		ResultSet rs = null;
+		int row = 0;
+		String createDate = null;
+		
+		boolean isResult = false;
+		boolean hisResult = false;
+		
+		String selectsql = "select * from reservation where reservationcode=?";
+		
+		String sql = "UPDATE reservation "
+				+ "SET ID=?, flightcode=?, seatsclass=?, seatsnum=?, createdate=?, lastupdatedate=? "
+				+ "WHERE reservationcode=?";
+		
+		try {
+			pstmt = conn.prepareStatement(selectsql);
+			pstmt.setString(1, reservation.getReservationcode());
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				reservation.setCreatedate(rs.getString("createdate"));
+			}
+			
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, reservation.getID());
+			pstmt.setString(2, reservation.getFlightcode());
+			pstmt.setString(3, reservation.getSeatsclass());
+			pstmt.setInt(4, reservation.getSeatsnum());
+			pstmt.setString(5, reservation.getCreatedate());
+			pstmt.setString(6, reservation.getLastupdatedate());
+			pstmt.setString(7, reservation.getReservationcode());
+			
+			row = pstmt.executeUpdate();
+			
+			if(row > 0) isResult = true;
+			
+			selectsql = "select * from reservation_his where reservationcode=? order by 1 desc limit 1";
+			
+			pstmt_his = conn.prepareStatement(selectsql);
+			pstmt_his.setString(1, reservation.getReservationcode());
+			rs = pstmt_his.executeQuery();
+			
+			int seq = 0;
+			if(rs.next()) {
+				seq = rs.getInt("his_SEQ");
+			}
+			
+			sql = "insert into reservation_his (his_SEQ, reservationcode, ID, flightcode, seatsclass, seatsNum, his_date) "
+					+ "values(?, ?, ?, ?, ?, ?, ?)";
+			
+			pstmt_his = conn.prepareStatement(sql);
+			pstmt_his.setInt(1, seq+1);
+			pstmt_his.setString(2, reservation.getReservationcode());
+			pstmt_his.setString(3, reservation.getID());
+			pstmt_his.setString(4, reservation.getFlightcode());
+			pstmt_his.setString(5, reservation.getSeatsclass());
+			pstmt_his.setInt(6, reservation.getSeatsnum());
+			pstmt_his.setString(7, reservation.getLastupdatedate());
+			
+			row = 0;
+			row = pstmt_his.executeUpdate();
+			
+			if(row > 0) hisResult = true;
+			
+			if(!isResult || !hisResult){
+				DBMUtil.rollback(conn);
+				return false;
+			} else {
+				DBMUtil.commit(conn);
+				return true;
+			}
+			
+		} catch (Exception e) {
+			DBMUtil.rollback(conn);
+			System.out.println(e.getMessage());
+			return false;
+		} finally {
+			DBMUtil.dipose(null, pstmt, null, rs);
+		}
+	}
+
+	public static List<member> getMemberList(Connection conn) {
+		List<member> memberList = new ArrayList<member>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		String sql = "select * from member";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				member member = new member();
+				member = makeMemberModule(rs);
+				
+				memberList.add(member);
+			}
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} finally {
+			DBMUtil.dipose(null, pstmt, null, rs);
+		}
+		
+		return memberList;
 	}
 
 }

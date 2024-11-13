@@ -43,7 +43,7 @@
         <nav>
             <ul>
                 <li><a href="myPage.jsp">마이 페이지</a></li>
-                <li><a href="#">예약 내역</a></li>
+                <li><a href="reservationhis.form">예약 내역</a></li>
                 <li><%= member.getName() %> 님</li>
                 <li><a href="../login.jsp">로그아웃</a></li>
             </ul>

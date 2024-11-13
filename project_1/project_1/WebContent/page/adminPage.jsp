@@ -1,9 +1,5 @@
-<%@page import="DBModule.flight"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="java.util.List"%>
 <%@page import="DBModule.member"%>
 <%@page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <style>
 	@import url('https://cdn.rawgit.com/moonspam/NanumSquare/master/nanumsquare.css');
 </style>
@@ -13,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GooD Flight</title>
     <link rel="stylesheet" href="../css/mainPage.css">
+    <link rel="stylesheet" href="../css/css.css" />
     <script type="text/javascript">
 	  	var imgArray=new Array();
 	  	imgArray[0]="../assets/1.jpg";
@@ -30,8 +27,6 @@
  </script>
  <%
  	member member = (member)session.getAttribute("Member");
- 	List<flight> flightList = (ArrayList)request.getAttribute("flightList");
- 	flight fligt = new flight();
  %>
 </head>
 <body onload="showImage()" id="bodyImg">
@@ -41,8 +36,8 @@
         </div>
         <nav>
             <ul>
-                <li><a href="myPage.jsp">마이 페이지</a></li>
-                <li><a href="reservationhis.form">예약 내역</a></li>
+                <li><a href="myPage.jsp">관리자 정보</a></li>
+                <li><a href="viewAllMember.form">회원 목록</a></li>
                 <li><%= member.getName() %> 님</li>
                 <li><a href="../login.jsp">로그아웃</a></li>
             </ul>
@@ -51,18 +46,17 @@
 
     <main>
         <section class="search-section">
-            <div class="search-bar">
-                <div class="search-section-list">
-                	<c:if test="<%= flightList.isEmpty() %>">
-        				<h1>검색 조건에 맞는 항공편이 없습니다.</h1>
-       				</c:if>
-       				<ol>
-       					<c:forEach var="flight" items="<%= flightList %>">
-       						<li><span onclick="location.href='flightDetail.form?flightcode=${ flight.getFlightcode() }'">${ flight.getFlightname() }</span><p>${ flight.getFlightcode() }  /  ${ flight.getComment() }</p></li>
-       					</c:forEach>
-       				</ol>
-                </div>
-            </div>
+    <form style="display: flex; justify-content: center; align-content: center;">
+    	<div id="logInBox">
+			<label id="title">관리자 페이지</label>
+			<div id="btnArea">
+				<input type="button" value="회원 관리" onclick="location.href='viewAllMember.form'">
+			</div>
+			<div id="btnArea">
+				<input type="button" value="항공편 등록" onclick="location.href='setFlight.form'">
+			</div>
+		</div>
+	</form>
         </section>
     </main>
     <footer>

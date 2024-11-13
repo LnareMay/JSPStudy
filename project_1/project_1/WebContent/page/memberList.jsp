@@ -1,4 +1,3 @@
-<%@page import="DBModule.flight"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="java.util.List"%>
 <%@page import="DBModule.member"%>
@@ -30,8 +29,7 @@
  </script>
  <%
  	member member = (member)session.getAttribute("Member");
- 	List<flight> flightList = (ArrayList)request.getAttribute("flightList");
- 	flight fligt = new flight();
+ 	List<member> memberList = (ArrayList)request.getAttribute("memberList");
  %>
 </head>
 <body onload="showImage()" id="bodyImg">
@@ -53,12 +51,17 @@
         <section class="search-section">
             <div class="search-bar">
                 <div class="search-section-list">
-                	<c:if test="<%= flightList.isEmpty() %>">
-        				<h1>검색 조건에 맞는 항공편이 없습니다.</h1>
+                	<c:if test="<%= memberList == null %>">
+        				<h1>회원 목록이 없습니다.</h1>
        				</c:if>
        				<ol>
-       					<c:forEach var="flight" items="<%= flightList %>">
-       						<li><span onclick="location.href='flightDetail.form?flightcode=${ flight.getFlightcode() }'">${ flight.getFlightname() }</span><p>${ flight.getFlightcode() }  /  ${ flight.getComment() }</p></li>
+       					<c:forEach var="mem" items="<%= memberList %>">
+       						<div class="input-group">
+                        		<label for="memInfo" style="color: black; text-align: left;">${ mem.getID() }</label>
+                        		<input type="button" id="memInfo" name="memInfo" style="cursor: pointer; background-color: #1c7bbf; color: #ffffff;"
+                        		onclick="location.href='viewMemberDetail.form?ID=${ mem.getID() }'"
+                        		value="${ mem.getName() }님 정보">
+                    		</div>
        					</c:forEach>
        				</ol>
                 </div>

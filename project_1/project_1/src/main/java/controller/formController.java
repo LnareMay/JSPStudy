@@ -42,8 +42,28 @@ public class formController extends HttpServlet{
 			service = new ViewMainPage();
 			forward = service.execute(req, resp);
 		}
+		if(command.equalsIgnoreCase("viewAdminPage")) {
+			service = new ViewMainPage(true);
+			forward = service.execute(req, resp);
+		}
 		if(command.equalsIgnoreCase("page/flightDetail")) {
 			service = new ViewFligthDetail();
+			forward = service.execute(req, resp);
+		}
+		if(command.equalsIgnoreCase("page/reservationhis")) {
+			service = new ViewReservationHis();
+			forward = service.execute(req, resp);
+		}
+		if(command.equalsIgnoreCase("page/reservationDetail")) {
+			service = new ViewReservationDetail();
+			forward = service.execute(req, resp);
+		}
+		if(command.equalsIgnoreCase("page/viewAllMember")) {
+			service = new ViewAllMember();
+			forward = service.execute(req, resp);
+		}
+		if(command.equalsIgnoreCase("page/viewMemberDetail")) {
+			service = new ViewMemberDetail();
 			forward = service.execute(req, resp);
 		}
 		
