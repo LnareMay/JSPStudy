@@ -10,6 +10,9 @@
     <title>GooD Flight</title>
     <link rel="stylesheet" href="../css/mainPage.css">
     <link rel="stylesheet" href="../css/css.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script type="text/javascript">
 	  	var imgArray=new Array();
 	  	imgArray[0]="../assets/1.jpg";
@@ -23,7 +26,6 @@
 		   objImg.background=imgArray[imgNum];
 		   setTimeout(showImage,5000);
 	 	}
-
  </script>
  <%
  	member member = (member)session.getAttribute("Member");
@@ -43,8 +45,8 @@
         </div>
         <nav>
             <ul>
-                <li><a href="myPage.jsp">마이 페이지</a></li>
-                <li><a href="reservationhis.form">예약 내역</a></li>
+                <li><a href="myPage.jsp">관리자 정보</a></li>
+                <li><a href="viewAllMember.form">회원 목록</a></li>
                 <li><%= member.getName() %> 님</li>
                 <li><a href="../login.jsp">로그아웃</a></li>
             </ul>
@@ -52,52 +54,51 @@
     </header>
 
     <main>
-        <form action="reservation.do" method="post">
+    <section class="search-section">
+            <div class="search-bar">
+        	<form action="updateUser.do" method="post">
                     <div class="input-group">
-                        <label for="flightCode">아이디</label>
-                        <input type="text" id="flightCode" name="flightCode" value="<%= memInfo.getID() %>" readonly="readonly">
+                        <label for="ID">아이디</label>
+                        <input type="text" id="ID" name="ID" value="<%= memInfo.getID() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
-                        <label for="flightCode">이름</label>
-                        <input type="text" id="flightCode" name="flightCode" value="<%= memInfo.getName() %>" readonly="readonly">
+                        <label for="name">이름</label>
+                        <input type="text" id="name" name="name" value="<%= memInfo.getName() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
-                        <label for="flightName">이메일</label>
-                        <input type="text" id="flightName" name="flightName" value="<%= memInfo.getEmail() %>" readonly="readonly">
+                        <label for="email">이메일</label>
+                        <input type="text" id="email" name="email" value="<%= memInfo.getEmail() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
-                        <label for="from">전화번호</label>
-                        <input type="text" id="from" name="from" value="<%= memInfo.getTel() %>" readonly="readonly">
+                        <label for="tel">전화번호</label>
+                        <input type="text" id="tel" name="tel" value="<%= tel %>" readonly="readonly">
                     </div>
                     <div class="input-group">
-                        <label for="to">목적지</label>
-                        <input type="text" id="to" name="to" value="<%= memInfo.getToairport() %>" readonly="readonly">
+                        <label for="createDate">가입 일자</label>
+                        <input type="text" id="createDate" name="createDate" value="<%= memInfo.getCreatedate() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
-                        <label for="startTime">출발 시간</label>
-                        <input type="text" id="startTime" name="startTime" value="<%= memInfo.getStarttime() %>" readonly="readonly">
+                        <label for="lastUpdateDate">최근 변경 일자</label>
+                        <input type="text" id="lastUpdateDate" name="lastUpdateDate" value="<%= memInfo.getLastupdatedate() %>" readonly="readonly">
                     </div>
                     <div class="input-group">
-                        <label for="endTime">도착 시간</label>
-                        <input type="text" id="endTime" name="endTime" value="<%= memInfo.getEndtime() %>" readonly="readonly">
+                        <label for="deleteFlag">삭제 여부</label><input type="checkbox" id="deleteFlag" name="deleteFlag" disabled="disabled" style="color: #1c7bbf;" <% if(memInfo.getDeleteflag() != null && memInfo.getDeleteflag().equalsIgnoreCase("C")){ out.write("checked"); } %>>
                     </div>
                     <div class="input-group">
-                        <label for="comment">상세 설명</label>
-                        <input type="text" id="comment" name="comment" value="<%= memInfo.getComment() %>" readonly="readonly">
-                    </div>
-                    <div class="input-group">
-                        <label for="seatsClass">좌석</label>
+                        <label for="seatsClass">권한</label>
                     </div>
                     <div class="input-group" style="display: flex;">
-                        <label>기장</label><input type="radio" id="isdriver" name="isdriver"> 
-                        <label>관리자</label><input type="radio" id="ismanager" name="ismanager">
+                        <label style="display: flex;">기장</label><input type="radio" id="role" name="role" value="driver" <% if(memInfo.getIsdriver() != null && memInfo.getIsdriver().equalsIgnoreCase("C")){ out.write("checked"); } %>> 
+                        <label style="display: flex;">관리자</label><input type="radio" id="role" name="role" value="manager" <% if(memInfo.getIsmanager() != null && memInfo.getIsmanager().equalsIgnoreCase("C")){ out.write("checked"); } %>>
                     </div>
-                    <div class="input-group">
-                        <label for="seats">인원 수</label>
-                        <input type="number" id="seats" name="seats">
-                    </div>
-                    <button type="submit" class="search-button">예약</button>
+                    <div style="display: flex;">
+                    	<button type="submit" class="search-button" style="margin-right: 5px;">수정</button>
+                    	<button type="button" class="btn btn-danger" style="margin-right: 5px; width: 100%; font-size: 18px" onclick="location.href='deleteOrReviveUser.do?id=<%= memInfo.getID() %>&doDelete=true'">삭제</button>                    
+                    	<button type="button" class="btn btn-success" style="margin-right: 5px; width: 100%; font-size: 18px" onclick="location.href='deleteOrReviveUser.do?id=<%= memInfo.getID() %>&doDelete=false'">복원</button>                    
+                	</div>
                 </form>
+             </div>
+         </section>
     </main>
     <footer>
         <div class="footer-content">

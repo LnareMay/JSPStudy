@@ -46,7 +46,7 @@
             <div class="search-bar">
                 <form action="./mainPage.jsp" method="post">
                 	<div class="input-group">
-                        <label for="seatsClass">예약이 성공적으로 완료되었습니다.</label>
+                        <label for="seatsClass">예약이 성공적으로 완료/변경 되었습니다.</label>
                     </div>
                     <button type="submit" class="search-button">확인</button>
                 </form>

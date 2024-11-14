@@ -60,6 +60,14 @@ public class suvletController extends HttpServlet{
 			service = new UpdateReservation();
 			forward = service.execute(req, resp);
 		}
+		if(command.equalsIgnoreCase("page/deleteOrReviveUser")) {
+			service = new DeleteOrReviveUser();
+			forward = service.execute(req, resp);
+		}
+		if(command.equalsIgnoreCase("page/updateUser")) {
+			service = new UpdateUserForAdmin();
+			forward = service.execute(req, resp);
+		}
 		
 		if(forward != null) {
 			if(forward.isRedirect()) {

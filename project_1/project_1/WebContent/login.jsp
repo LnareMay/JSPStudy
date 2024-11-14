@@ -6,6 +6,9 @@
 <meta charset="UTF-8">
 <title></title>
 </head>
+<%
+	session.removeAttribute("Member");
+%>
 <body id="backBody">
 	<img src="./assets/logo.png" id="logoImage">
 	<form method="post" action="login.do">

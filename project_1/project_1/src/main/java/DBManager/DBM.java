@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -508,6 +510,93 @@ public class DBM {
 		}
 		
 		return memberList;
+	}
+
+	public static boolean deleteOrRevive(Connection conn, String id, boolean isDelete) {
+		PreparedStatement pstmt = null;
+		PreparedStatement his_pstmt = null;
+		ResultSet rs = null;
+		member member = null;
+		int seq = 0;
+		int row = 0;
+		int his_row = 0;
+		boolean result = false;
+		
+		String sql = "update member set lastupdatedate=?, deleteflag=? where id=?";
+		String his_sql = "select * from member_his where ID=? order by 1 desc limit 1";
+		
+		try {
+			member = selectOneById(conn, id);
+			
+			his_pstmt = conn.prepareStatement(his_sql);
+			his_pstmt.setString(1, id);
+			rs = his_pstmt.executeQuery();
+			
+			if(rs.next()) {
+				seq = rs.getInt("his_SEQ");
+			}
+			
+			if(seq == 0) {
+				DBMUtil.rollback(conn);
+				return false;
+			}
+			
+			
+			pstmt = conn.prepareStatement(sql);
+			Date dtLastUpdateDate = new Date();
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String lastUpdateDate = format.format(dtLastUpdateDate);
+			
+			pstmt.setString(1, lastUpdateDate);
+			if(isDelete) {
+				pstmt.setString(2, "C");
+			} else {
+				pstmt.setNull(2, Types.NVARCHAR);
+			}
+			pstmt.setString(3, id);
+			row = pstmt.executeUpdate();
+			
+			his_sql = "INSERT INTO member_his "
+					+ "(his_SEQ, ID, password, name, email, tel, ismanager, isdriver, his_date, deleteflag) "
+					+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			his_pstmt = conn.prepareStatement(his_sql);
+			his_pstmt.setInt(1, seq + 1);
+			his_pstmt.setString(2, member.getID());
+			his_pstmt.setString(3, member.getPassword());
+			his_pstmt.setString(4, member.getName());
+			his_pstmt.setString(5, member.getEmail());
+			his_pstmt.setString(6, member.getTel());
+			his_pstmt.setString(7, member.getIsmanager());
+			his_pstmt.setString(8, member.getIsdriver());
+			his_pstmt.setString(9, lastUpdateDate);
+			if(isDelete) {
+				his_pstmt.setString(10, "C");
+			} else {
+				his_pstmt.setNull(10, Types.NVARCHAR);
+			}
+			his_row = his_pstmt.executeUpdate();
+			
+			if(row > 0 && his_row > 0) {
+				result = true;
+				DBMUtil.commit(conn);
+			} else {
+				result = false;
+				DBMUtil.rollback(conn);
+			}
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			DBMUtil.rollback(conn);
+		} finally {
+			DBMUtil.dipose(null, pstmt, his_pstmt, rs);
+		}
+		
+		return result;
+	}
+
+	public static boolean updateMemberForAdmin(Connection conn, member member) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

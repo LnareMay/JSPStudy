@@ -37,7 +37,7 @@ public class LogInService implements Service {
 				session.setAttribute("Member", member);
 				forward = new ServiceForward();
 				forward.setRedirect(true);
-				if(member.getName() == "관리자") {
+				if(member.getIsmanager() != null && member.getIsmanager().equalsIgnoreCase("C")) {
 					forward.setPath("viewAdminPage.form");
 				} else {
 					forward.setPath("viewMainPage.form");

@@ -87,9 +87,9 @@
                         <label for="seatsClass">좌석</label>
                     </div>
                     <div class="input-group" style="display: flex;">
-                        <label>First</label><input type="radio" id="firstclassseats" name="firstclassseats"> 
-                        <label>Business</label><input type="radio" id="businessseats" name="businessseats">
-                        <label>Economy</label><input type="radio" id="economyseats" name="economyseats">
+                        <label>First</label><input type="radio" id="seatsClass" name="seatsClass" value="First" <% if(request.getParameter("seatsClass").equalsIgnoreCase("firstclassseats")){ out.write("checked"); } %>> 
+                        <label>Business</label><input type="radio" id="seatsClass" name="seatsClass" value="Business" <% if(request.getParameter("seatsClass").equalsIgnoreCase("businessseats")){ out.write("checked"); } %>>
+                        <label>Economy</label><input type="radio" id="seatsClass" name="seatsClass" value="Economy" <% if(request.getParameter("seatsClass").equalsIgnoreCase("economyseats")){ out.write("checked"); } %>>
                     </div>
                     <div class="input-group">
                         <label for="seats">인원 수</label>

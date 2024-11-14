@@ -22,9 +22,10 @@ public class reservationFlight implements Service {
 		String flightCode = req.getParameter("flightCode");
 		String seatsClass = null;
 		int seats = Integer.parseInt(req.getParameter("seats"));
-		if(req.getParameter("firstclassseats") != null) seatsClass = "firstclassseats";
-		if(req.getParameter("businessseats") != null) seatsClass = "businessseats";
-		if(req.getParameter("economyseats") != null) seatsClass = "economyseats";
+		String tmpseatsClass = req.getParameter("seatsClass");
+		if(tmpseatsClass.equalsIgnoreCase("First")) seatsClass = "firstclassseats";
+		if(tmpseatsClass.equalsIgnoreCase("Business")) seatsClass = "businessseats";
+		if(tmpseatsClass.equalsIgnoreCase("Economy")) seatsClass = "economyseats";
 		
 		Date date = new Date();
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-ddHHmm:ss");

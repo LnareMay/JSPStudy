@@ -2,15 +2,14 @@ package services;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
 
 public class ViewMainPage implements Service {
 	boolean isAdmin = false;
 	public ViewMainPage() {
-		isAdmin = true;
 	}
 	public ViewMainPage(boolean b) {
-		// TODO Auto-generated constructor stub
+		isAdmin = b;
 	}
 
 	@Override
