@@ -595,8 +595,120 @@ public class DBM {
 	}
 
 	public static boolean updateMemberForAdmin(Connection conn, member member) {
-		// TODO Auto-generated method stub
-		return false;
+		PreparedStatement pstmt = null;
+		PreparedStatement his_pstmt = null;
+		ResultSet rs = null;
+		
+		int seq = 0;
+		int row = 0;
+		int his_row = 0;
+		boolean updateResult = false;
+		boolean hisResult = false;
+		
+		String sql = "UPDATE member "
+				+ "SET ismanager=?, isdriver=?, lastupdatedate=? "
+				+ "WHERE ID=?";
+		String his_sql = "select * from member_his where ID=? order by 1 desc limit 1";
+		
+		Date dtLastUpdateDate = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String lastUpdateDate = format.format(dtLastUpdateDate);
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, member.getIsmanager());
+			pstmt.setString(2, member.getIsdriver());
+			pstmt.setString(3, lastUpdateDate);
+			pstmt.setString(4, member.getID());
+			
+			row = pstmt.executeUpdate();
+				
+			if(row > 0) updateResult = true;
+			
+			his_pstmt = conn.prepareStatement(his_sql);
+			his_pstmt.setString(1, member.getID());
+			
+			rs = his_pstmt.executeQuery();
+			
+			if(rs.next()) {
+				seq = rs.getInt(1);
+			}
+			if(seq > 0) {
+				his_sql = "INSERT INTO member_his "
+						+ "(his_SEQ, ID, password, name, email, tel, ismanager, isdriver, his_date, deleteflag) "
+						+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+				
+				his_pstmt = conn.prepareStatement(his_sql);
+				his_pstmt.setInt(1, seq + 1);
+				his_pstmt.setString(2, member.getID());
+				his_pstmt.setString(3, member.getPassword());
+				his_pstmt.setString(4, member.getName());
+				his_pstmt.setString(5, member.getEmail());
+				his_pstmt.setString(6, member.getTel());
+				his_pstmt.setString(7, member.getIsmanager());
+				his_pstmt.setString(8, member.getIsdriver());
+				his_pstmt.setString(9, lastUpdateDate);
+				his_pstmt.setString(10, member.getDeleteflag());
+				
+				his_row = his_pstmt.executeUpdate();
+				
+				if(row > 0) hisResult = true;
+			} else {
+				DBMUtil.rollback(conn);
+				return false;
+			}
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			DBMUtil.rollback(conn);
+		} finally {
+			DBMUtil.dipose(null, pstmt, his_pstmt, rs);
+		}
+		if(updateResult && hisResult) {
+			DBMUtil.commit(conn);
+			return true;
+		} else {
+			DBMUtil.rollback(conn);
+			return false;
+		}
+	}
+
+	public static List<flight> getAllFlightList(Connection conn) {
+		List<flight> flightList = new ArrayList<flight>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		String sql = "select * from flight";
+		
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				flight flight = new flight();
+				flight.setFlightcode(rs.getString(1));
+				flight.setFlightname(rs.getString(2));
+				flight.setFromairport(rs.getString(3));
+				flight.setToairport(rs.getString(4));
+				flight.setFirstclassseats(rs.getInt(5));
+				flight.setBusinessseats(rs.getInt(6));
+				flight.setEconomyseats(rs.getInt(7));
+				flight.setStarttime(rs.getString(8));
+				flight.setEndtime(rs.getString(9));
+				flight.setReservationstarttime(rs.getString(10));
+				flight.setReservationendtime(rs.getString(11));
+				flight.setCreatedate(rs.getString(12));
+				flight.setLastupdatedate(rs.getString(13));
+				flight.setComment(rs.getString(14));
+				
+				flightList.add(flight);
+			}
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return flightList;
 	}
 
 }

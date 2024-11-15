@@ -58,9 +58,21 @@
        				</c:if>
        				<ol>
        					<c:forEach var="flight" items="<%= flightList %>">
-       						<li><span onclick="location.href='flightDetail.form?flightcode=${ flight.getFlightcode() }'">${ flight.getFlightname() }</span><p>${ flight.getFlightcode() }  /  ${ flight.getComment() }</p></li>
+       						<div class="input-group">
+	       						<label for="memInfo" style="color: black; text-align: left;">${ flight.getFlightcode() }</label>
+	                        		<input type="button" id="memInfo" name="memInfo" style="cursor: pointer; background-color: #1c7bbf; color: #ffffff;"
+	                        		onclick="location.href='flightDetail.form?flightcode=${ flight.getFlightcode() }'"
+	                        		value="${ flight.getFlightname() } 항공편&nbsp출발/도착지  ${ flight.getFromairport() } / ${ flight.getToairport() }">
+                        		</div>
        					</c:forEach>
        				</ol>
+       				<c:if test='<%= member.getIsmanager().equalsIgnoreCase("C") %>'>
+        				<div style="display: flex; flex-direction: row-reverse;">
+                    		<button type="button" class="search-button" style="width: 150px; align-content: flex-end;"
+                    		onclick="location.href='./registerFlight.jsp'"
+                    		>항공편 등록</button>
+                    	</div>
+       				</c:if>
                 </div>
             </div>
         </section>

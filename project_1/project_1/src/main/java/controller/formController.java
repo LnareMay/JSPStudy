@@ -66,6 +66,10 @@ public class formController extends HttpServlet{
 			service = new ViewMemberDetail();
 			forward = service.execute(req, resp);
 		}
+		if(command.equalsIgnoreCase("page/setFlight")) {
+			service = new setFlight();
+			forward = service.execute(req, resp);
+		}
 		
 		if(forward != null) {
 			if(forward.isRedirect()) {
